@@ -4,7 +4,7 @@ version: '3.4'
 
 services:
   DockerCompose-ValuesService:
-    image: docker-image-values-service
+    image: compose-image-values-service
     build:
       context: .
       dockerfile: Dockerfile

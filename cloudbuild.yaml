@@ -1,9 +1,9 @@
 steps:
 - name: "gcr.io/cloud-builders/docker"
-  args: ["build", "-t", "gcr.io/$PROJECT_ID/gcp-docker-image-values-service", "."]
+  args: ["build", "-t", "gcr.io/$_PROJECT_ID/gcp-docker-image-values-service", "."]
   id: "build image"
 - name: "gcr.io/cloud-builders/docker"
-  args: ["push", "gcr.io/$PROJECT_ID/gcp-docker-image-values-service"]
+  args: ["push", "gcr.io/$_PROJECT_ID/gcp-docker-image-values-service"]
   id: "push image"
 - name: "gcr.io/cloud-builders/kubectl"
   args:
@@ -12,4 +12,4 @@ steps:
   - "kubernetes/deployment.yaml"
   id: "deploy"
 images:
-- "gcr.io/$PROJECT_ID/gcp-docker-image-values-service"
+- "gcr.io/$_PROJECT_ID/gcp-docker-image-values-service"

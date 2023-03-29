@@ -11,7 +11,7 @@ steps:
   - "-f"
   - "kubernetes/deployment.yaml"
   env:
-    - '_MY_PROJECT_ID=${PROJECT_ID}'
+    - "_MY_PROJECT_ID=${PROJECT_ID}"
     - 'CLOUDSDK_COMPUTE_REGION=us-central1'
     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'

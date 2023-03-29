@@ -15,5 +15,15 @@ steps:
     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
   id: "deploy"
+- name: "gcr.io/cloud-builders/kubectl"
+  args:
+    - "apply"
+    - "-f"
+    - "kubernetes/load-balancer-service.yaml"
+  env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  id: "expose service"
 images:
 - "gcr.io/${PROJECT_ID}/gcp-docker-image-values-service"

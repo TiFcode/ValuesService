@@ -10,6 +10,10 @@ steps:
   - "apply"
   - "-f"
   - "kubernetes/deployment.yaml"
+  env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
   id: "deploy"
 images:
 - "gcr.io/$_PROJECT_ID/gcp-docker-image-values-service"

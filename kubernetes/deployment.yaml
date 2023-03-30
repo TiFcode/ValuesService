@@ -27,4 +27,3 @@ spec:
             requests:
               cpu: 128m
               memory: 128Mi
-          command: [ "sh", "-c", "echo salutare 1 => ${_MY_PROJECT_ID} ; 2 => ${PROJECT_ID}" ]

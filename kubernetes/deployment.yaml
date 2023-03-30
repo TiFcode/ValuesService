@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: values-service
-          image: gcr.io/values-service-gcp-project/gcp-docker-image-values-service
+          image: gcr.io/values-service-gcp-project/gcp-docker-image-values-service:latest
           ports:
             - containerPort: 80
           env:

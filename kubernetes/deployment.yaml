@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: values-service-k8s-deployment
 spec:
-  replicas: 3
+  replicas: 100
   selector:
     matchLabels:
       app: values-service

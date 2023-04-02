@@ -1,5 +1,4 @@
 // FormulasController Get method queries the PostgreSQL database named "FormulaEngine" hosted in GCP and returns a json containing "FormulaName" and "FormulaContent" columns from table "Formulas".
-
 using System.Data;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
@@ -7,56 +6,75 @@ using Npgsql;
 
 namespace MyApi.Controllers
 {
-    // Command
-    public class GetFormulasCommand
+    // Model
+    public class Formula
     {
-        public string ConnectionString { get; set; }
-        public GetFormulasCommand()
+        public Formula(
+            string formulaName,
+            string formulaContent)
         {
-            ConnectionString = string.Empty;
+            FormulaName = formulaName;
+            FormulaContent = formulaContent;
         }
+
+        public string FormulaName { get; set; }
+        public string FormulaContent { get; set; }
     }
 
-    // Result
-    public class GetFormulasResult
+    // Repository
+    public class FormulasRepository
     {
-        public string FormulasJson { get; set; }
-        public GetFormulasResult()
-        {
-            FormulasJson = string.Empty;
-        }
-    }
+        private readonly string _connectionString;
 
-    // Handler
-    public class GetFormulasHandler
-    {
-        public GetFormulasResult Handle(GetFormulasCommand command)
+        public FormulasRepository(string connectionString)
         {
-            using (var connection = new NpgsqlConnection(command.ConnectionString))
+            _connectionString = connectionString;
+        }
+
+        public DataTable GetFormulas()
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-
                 const string query = "SELECT \"FormulaName\", \"FormulaContent\" FROM \"Formulas\"";
+
                 using (var sqlCmd = new NpgsqlCommand(query, connection))
                 {
                     using (var reader = sqlCmd.ExecuteReader())
                     {
                         var dt = new DataTable();
                         dt.Load(reader);
-
-                        var jsonSerializerOptions = new JsonSerializerOptions
-                        {
-                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                        };
-                        string json = JsonSerializer.Serialize(dt, jsonSerializerOptions);
-
-                        return new GetFormulasResult { FormulasJson = json };
+                        return dt;
                     }
                 }
             }
         }
     }
 
+    // Services
+    public class FormulasService
+    {
+        private readonly FormulasRepository _formulasRepository;
+
+        public FormulasService(FormulasRepository formulasRepository)
+        {
+            _formulasRepository = formulasRepository;
+        }
+
+        public string GetFormulasAsJson()
+        {
+            var dt = _formulasRepository.GetFormulas();
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            string json = JsonSerializer.Serialize(dt, jsonSerializerOptions);
+            return json;
+        }
+    }
+
+    // Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class FormulasController : ControllerBase
@@ -66,11 +84,10 @@ namespace MyApi.Controllers
         [HttpGet]
         public string Get()
         {
-            var command = new GetFormulasCommand { ConnectionString = _connectionString };
-            var handler = new GetFormulasHandler();
-            var result = handler.Handle(command);
-            return result.FormulasJson;
+            var formulasRepository = new FormulasRepository(_connectionString);
+            var formulasService = new FormulasService(formulasRepository);
+            string formulasJson = formulasService.GetFormulasAsJson();
+            return formulasJson;
         }
-
     }
 }
